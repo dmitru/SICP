@@ -270,15 +270,24 @@
 (define (let? exp)
   (tagged-list? exp 'let))
 
-(define (let-epxs exp)
+(define (let-binds exp)
   (cadr exp))
 
 (define (let-body exp)
   (cddr exp))
 
+(define (bind-var bind) 
+  (car bind))
+
+(define (bind-exp bind)
+  (cadr bind))
+
+(define (make-bind var exp)
+  (list var exp))
+
 (define (let->combination exp)
-  (let ((args (map car (exp-exps)))
-        (exps (map cadr (exp-exps))))
+  (let ((vars (map bind-var (let-binds exp)))
+        (exps (map bind-exp (let-binds exp))))
   (make-application 
-   (make-lambda args (let-body exp))
+   (make-lambda vars (let-body exp))
    exps)))
